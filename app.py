@@ -20,7 +20,7 @@ book_collection = db["books"]
 class UserRole(str,Enum):
     admin = "admin"
     author = "author"
-    viewer = "viewer"
+    viewer = "viewer"   
 
 class User(BaseModel):
     name:str = Field(...,min_length=1)
@@ -69,7 +69,7 @@ async def login_user(user:LoginUser):
         password = userDetails["password"]
     
         existUser = await user_collection.find_one({"email":email})
-
+    
         print(existUser)
 
         if(not existUser):
@@ -187,10 +187,10 @@ async def get_books(req:Request,category:str=None,author:str = None):
         if author:
             query["author"] = author
 
-        cursor = await book_collection.find(query).to_list()
+        data = await book_collection.find(query).to_list()
         books = []
         
-        for book in cursor:
+        for book in data:
             books.append(book_format(book))
             
         if(books):
@@ -209,3 +209,5 @@ async def delete_book(req:Request,bookId:str):
     if(delete.deleted_count == 1):
         return "Book Deleted"
     return "Book Not Found"
+
+
